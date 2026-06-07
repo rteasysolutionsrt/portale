@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Gestione Personale — Portale</title>
+<style>
+  :root {
+    --navy:#0F2A4A; --navy2:#1a3d6b; --font:'Segoe UI',system-ui,sans-serif;
+    --bg:#eef1f5; --card:#fff; --border:#e2e5ea; --text:#1a1a2e;
+    --muted:#6b7280; --teal:#0d9488; --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:var(--font);background:var(--bg);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+
+  /* ── LOGIN PAGE ───────────────────────────── */
+  #loginPage{display:flex;align-items:center;justify-content:center;width:100%;min-height:100vh;padding:1rem;}
+  .login-card{background:var(--card);border-radius:20px;width:100%;max-width:360px;overflow:hidden;box-shadow:0 8px 40px rgba(15,42,74,.13);}
+  .login-banner{background:var(--navy);padding:28px 24px 24px;text-align:center;}
+  .login-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:6px 14px;margin-bottom:16px;}
+  .login-badge span{font-size:10px;font-weight:600;color:rgba(255,255,255,.65);letter-spacing:2.5px;text-transform:uppercase;}
+  .login-title{font-size:21px;font-weight:600;color:#fff;margin-bottom:4px;}
+  .login-sub{font-size:12px;color:rgba(255,255,255,.5);}
+  .login-body{padding:26px 24px 20px;}
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;}
+  .field input{width:100%;height:44px;border:1.5px solid var(--border);border-radius:10px;padding:0 14px;font-size:14px;color:var(--text);background:#f9fafb;outline:none;font-family:var(--font);transition:border-color .15s;}
+  .field input:focus{border-color:#185FA5;background:#fff;}
+  .field input::placeholder{color:#b0b7c3;}
+  .btn-login{width:100%;height:46px;background:var(--navy);color:#fff;border:none;border-radius:11px;font-size:14px;font-weight:600;font-family:var(--font);cursor:pointer;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s;}
+  .btn-login:hover{background:var(--navy2);}
+  .btn-login:disabled{opacity:.6;cursor:default;}
+  .login-err{font-size:12px;color:#c0392b;background:#fdf2f2;border:1px solid #fbd5d5;border-radius:8px;padding:9px 12px;margin-top:12px;display:none;}
+  .login-footer{text-align:center;padding:13px;border-top:1px solid var(--border);font-size:11px;color:#b0b7c3;}
+
+  /* ── HUB PAGE ─────────────────────────────── */
+  #hubPage{display:none;width:100%;min-height:100vh;align-items:center;justify-content:center;padding:1.5rem 1rem;}
+  .hub-wrap{background:var(--card);border-radius:20px;width:100%;max-width:620px;overflow:hidden;box-shadow:0 8px 40px rgba(15,42,74,.13);}
+  .hub-header{background:var(--navy);padding:30px 32px 26px;text-align:center;}
+  .hub-eyebrow{font-size:10px;font-weight:600;color:rgba(255,255,255,.5);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;}
+  .hub-title{font-size:24px;font-weight:700;color:#fff;margin-bottom:5px;}
+  .hub-sub{font-size:13px;color:rgba(255,255,255,.5);}
+  .hub-body{padding:28px;}
+  .modules-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .mod-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:20px 12px 16px;display:flex;flex-direction:column;align-items:center;gap:9px;cursor:pointer;transition:border-color .15s,box-shadow .15s;text-decoration:none;}
+  .mod-card:hover{border-color:#185FA5;box-shadow:0 4px 16px rgba(24,95,165,.1);}
+  .mod-card.disabled{opacity:.42;cursor:default;pointer-events:none;}
+  .mod-icon{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;}
+  .mod-icon.blue{background:#dbeafe;}
+  .mod-icon.green{background:#dcfce7;}
+  .mod-icon.amber{background:#fef3c7;}
+  .mod-icon.red{background:#fee2e2;}
+  .mod-icon.gray{background:#f3f4f6;}
+  .mod-name{font-size:13px;font-weight:600;color:var(--text);text-align:center;}
+  .mod-desc{font-size:11px;color:var(--muted);text-align:center;line-height:1.4;}
+  .mod-soon{font-size:10px;color:var(--muted);background:#f3f4f6;border-radius:4px;padding:2px 8px;margin-top:2px;}
+  .hub-footer{padding:16px 28px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:#fafbfc;}
+  .hub-user{display:flex;align-items:center;gap:10px;}
+  .hub-avatar{width:34px;height:34px;border-radius:50%;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#185FA5;}
+  .hub-name{font-size:13px;font-weight:600;color:var(--text);}
+  .hub-role{font-size:11px;color:var(--muted);}
+  .btn-logout{font-size:12px;color:var(--muted);background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:6px 14px;cursor:pointer;font-family:var(--font);transition:border-color .15s;}
+  .btn-logout:hover{border-color:#185FA5;color:#185FA5;}
+  .hub-bottom{text-align:center;padding:10px;font-size:11px;color:#c0c7d0;}
+
+  /* SVG icons inline */
+  .icon-ship{color:#185FA5;} .icon-prog{color:#16a34a;} .icon-vmc{color:#dc2626;}
+  .icon-corsi{color:#d97706;} .icon-stat{color:#6b7280;} .icon-doc{color:#6b7280;}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ LOGIN PAGE ══════════════════ -->
+<div id="loginPage">
+  <div class="login-card">
+    <div class="login-banner">
+      <div class="login-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.65)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>S.M.A.R.T Solutions</span>
+      </div>
+      <div class="login-title">Gestione Personale</div>
+      <div class="login-sub">Accedi con le tue credenziali</div>
+    </div>
+    <div class="login-body">
+      <div class="field">
+        <label>Username</label>
+        <input type="text" id="loginUser" placeholder="Il tuo username" autocomplete="username">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="btn-login" id="btnLogin" onclick="doLogin()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        Accedi
+      </button>
+      <div class="login-err" id="loginErr">Username o password errati.</div>
+    </div>
+    <div class="login-footer">Portale Gestione Personale &mdash; v1.0</div>
+  </div>
+</div>
+
+<!-- ══════════════════ HUB PAGE ══════════════════ -->
+<div id="hubPage">
+  <div class="hub-wrap">
+    <div class="hub-header">
+      <div class="hub-eyebrow">Gestione Personale</div>
+      <div class="hub-title" id="hubWelcome">Benvenuto</div>
+      <div class="hub-sub">Seleziona il modulo da aprire</div>
+    </div>
+    <div class="hub-body">
+      <div class="modules-grid">
+
+        <!-- Posizionamento -->
+        <div class="mod-card" onclick="openModule('https://notespesedipendenti.github.io/Posizionamento/')" id="cardPosizionamento">
+          <div class="mod-icon blue">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="1.8"><path d="M2 20h20M5 20V10l7-7 7 7v10"/><path d="M9 20v-5h6v5"/></svg>
+          </div>
+          <div class="mod-name">Posizionamento</div>
+          <div class="mod-desc">Gestione personale a bordo</div>
+        </div>
+
+        <!-- Programmazione -->
+        <div class="mod-card" onclick="openModule('https://notespesedipendenti.github.io/Posizionamento/')" id="cardProgrammazione">
+          <div class="mod-icon green">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div class="mod-name">Programmazione</div>
+          <div class="mod-desc">Turni e periodi per nave</div>
+        </div>
+
+        <!-- VMC -->
+        <div class="mod-card" onclick="openModule('https://notespesedipendenti.github.io/VMC271/')" id="cardVmc">
+          <div class="mod-icon red">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.8"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </div>
+          <div class="mod-name">VMC</div>
+          <div class="mod-desc">Visite mediche</div>
+        </div>
+
+        <!-- Corsi IMAT -->
+        <div class="mod-card" onclick="openModule('https://notespesedipendenti.github.io/Corsi-Imat/')" id="cardCorsi">
+          <div class="mod-icon amber">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          </div>
+          <div class="mod-name">Corsi IMAT</div>
+          <div class="mod-desc">Gestione corsi</div>
+        </div>
+
+        <!-- Statistiche — prossimamente -->
+        <div class="mod-card disabled" id="cardStatistiche">
+          <div class="mod-icon gray">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          <div class="mod-name">Statistiche</div>
+          <div class="mod-desc">Report e analisi</div>
+          <span class="mod-soon">prossimamente</span>
+        </div>
+
+        <!-- Documenti — prossimamente -->
+        <div class="mod-card disabled" id="cardDocumenti">
+          <div class="mod-icon gray">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <div class="mod-name">Documenti</div>
+          <div class="mod-desc">Contratti</div>
+          <span class="mod-soon">prossimamente</span>
+        </div>
+
+      </div>
+    </div>
+    <div class="hub-footer">
+      <div class="hub-user">
+        <div class="hub-avatar" id="hubAvatar">?</div>
+        <div>
+          <div class="hub-name" id="hubName">—</div>
+          <div class="hub-role" id="hubRole">—</div>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="vertical-align:-1px;margin-right:5px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Esci
+      </button>
+    </div>
+    <div class="hub-bottom">&copy; 2025 S.M.A.R.T Solutions &mdash; Tutti i diritti riservati</div>
+  </div>
+</div>
+
+<script>
+const SB_URL = 'https://sscqklzbaowzstkmoeul.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzY3FrbHpiYW93enN0a21vZXVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1MTA3MzMsImV4cCI6MjA5MDA4NjczM30.cDScurLm8Id_n0Jz3wXIQ3lvD_jezvELZxZQb0oymz4';
+const H = {'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'};
+
+let utente = null;
+
+async function sbGet(path) {
+  const r = await fetch(SB_URL+'/rest/v1/'+path, {headers:H});
+  if(!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+// ── Inizializzazione ───────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('portale_utente');
+  if(saved) { utente = JSON.parse(saved); showHub(); }
+
+  document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+  document.getElementById('loginUser').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+});
+
+// ── Login ──────────────────────────────────────────
+async function doLogin() {
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const err  = document.getElementById('loginErr');
+  const btn  = document.getElementById('btnLogin');
+  err.style.display = 'none';
+  if(!user||!pass) { err.textContent='Inserisci username e password.'; err.style.display='block'; return; }
+  btn.disabled = true; btn.textContent = 'Accesso in corso...';
+  try {
+    const data = await sbGet(`pn_utenti?username=eq.${encodeURIComponent(user)}&password=eq.${encodeURIComponent(pass)}&attivo=eq.true&select=id,nome,username,ruolo,nave_id,attivo,flotta,moduli`);
+    if(!data||!data.length) {
+      err.textContent = 'Username o password errati.';
+      err.style.display = 'block';
+      btn.disabled = false; btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> Accedi';
+      return;
+    }
+    utente = data[0];
+    localStorage.setItem('portale_utente', JSON.stringify(utente));
+    showHub();
+  } catch(e) {
+    err.textContent = 'Errore di connessione. Riprova.';
+    err.style.display = 'block';
+    btn.disabled = false; btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> Accedi';
+  }
+}
+
+// ── Mostra Hub ─────────────────────────────────────
+function showHub() {
+  document.getElementById('loginPage').style.display = 'none';
+  document.getElementById('hubPage').style.display   = 'flex';
+  const nome = utente.nome || utente.username || '—';
+  const iniziali = nome.split(' ').map(p=>p[0]).join('').substring(0,2).toUpperCase();
+  const ruoloLabel = {admin:'Amministratore', semiadmin:'Semi-amministratore', commissario:'Commissario'}[utente.ruolo] || utente.ruolo || '—';
+  document.getElementById('hubWelcome').textContent = 'Benvenuto, ' + nome;
+  document.getElementById('hubName').textContent    = nome;
+  document.getElementById('hubRole').textContent    = ruoloLabel;
+  document.getElementById('hubAvatar').textContent  = iniziali;
+  applyPermessi();
+}
+
+function openModule(url) {
+  if(utente) {
+    const data = {
+      nome: utente.nome || utente.username,
+      username: utente.username,
+      ruolo: utente.ruolo,
+      flotta: utente.flotta || 'entrambe',
+      moduli: utente.moduli || [],
+      ts: Date.now()
+    };
+    // Encoding semplice e affidabile
+    const json = JSON.stringify(data);
+    const encoded = btoa(json);
+    const sep = url.includes('?') ? '&' : '?';
+    window.open(url + sep + 'al=' + encodeURIComponent(encoded), '_blank');
+  } else {
+    window.open(url, '_blank');
+  }
+}
+
+function applyPermessi() {
+  // Admin vede tutto
+  if(utente.ruolo === 'admin') return;
+  // Parsing moduli — Supabase jsonb arriva già come array JS, oppure come stringa
+  let moduli = [];
+  try {
+    if(Array.isArray(utente.moduli)) {
+      moduli = utente.moduli;
+    } else if(typeof utente.moduli === 'string' && utente.moduli) {
+      moduli = JSON.parse(utente.moduli);
+    }
+  } catch(e){ moduli = []; }
+  // Se moduli è vuoto o null non applicare restrizioni
+  if(!moduli || !moduli.length) return;
+  const modMap = {
+    'posizionamento': 'cardPosizionamento',
+    'programmazione': 'cardProgrammazione',
+    'vmc':            'cardVmc',
+    'corsi':          'cardCorsi',
+    'statistiche':    'cardStatistiche',
+    'documenti':      'cardDocumenti',
+  };
+  Object.entries(modMap).forEach(([key, cardId]) => {
+    const el = document.getElementById(cardId);
+    if(!el) return;
+    if(!moduli.includes(key)) {
+      el.classList.add('disabled');
+      el.onclick = null;
+      if(!el.querySelector('.mod-soon')) {
+        const s = document.createElement('span');
+        s.className='mod-soon'; s.textContent='non abilitato';
+        el.appendChild(s);
+      }
+    }
+  });
+}
+
+// ── Logout ─────────────────────────────────────────
+function doLogout() {
+  utente = null;
+  localStorage.removeItem('portale_utente');
+  document.getElementById('hubPage').style.display   = 'none';
+  document.getElementById('loginPage').style.display = 'flex';
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('loginErr').style.display  = 'none';
+  document.getElementById('btnLogin').disabled = false;
+  document.getElementById('btnLogin').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> Accedi';
+}
+</script>
+</body>
+</html>
