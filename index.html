@@ -218,7 +218,7 @@ async function doLogin() {
   if(!user||!pass) { err.textContent='Inserisci username e password.'; err.style.display='block'; return; }
   btn.disabled = true; btn.textContent = 'Accesso in corso...';
   try {
-    const data = await sbGet(`pn_utenti?username=eq.${encodeURIComponent(user)}&password=eq.${encodeURIComponent(pass)}&attivo=eq.true&select=id,nome,username,ruolo,nave_id,attivo,flotta,moduli,can_admin`);
+    const data = await sbGet(`pn_utenti?username=eq.${encodeURIComponent(user)}&password=eq.${encodeURIComponent(pass)}&attivo=eq.true&select=id,nome,username,ruolo,nave_id,attivo,flotta,moduli,can_admin,livello`);
     if(!data||!data.length) {
       err.textContent = 'Username o password errati.';
       err.style.display = 'block';
@@ -258,6 +258,7 @@ function openModule(url, modulo) {
       flotta: utente.flotta || 'entrambe',
       moduli: utente.moduli || [],
       can_admin: utente.can_admin === true,
+      livello: utente.livello || 'alto',
       modulo: modulo || 'pos',
       ts: Date.now()
     };
