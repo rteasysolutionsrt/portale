@@ -11,7 +11,7 @@
     --muted:#6b7280; --teal:#0d9488; --radius:14px;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:var(--font);background:var(--bg);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  body{font-family:var(--font);background:linear-gradient(135deg,#eef1f5 0%,#dbe2ea 100%);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;}
 
   /* ── LOGIN PAGE ───────────────────────────── */
   #loginPage{display:flex;align-items:center;justify-content:center;width:100%;min-height:100vh;padding:1rem;}
@@ -40,9 +40,9 @@
   .hub-eyebrow{font-size:10px;font-weight:600;color:rgba(255,255,255,.5);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;}
   .hub-title{font-size:24px;font-weight:700;color:#fff;margin-bottom:5px;}
   .hub-sub{font-size:13px;color:rgba(255,255,255,.5);}
-  .hub-body{padding:28px;}
-  .modules-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
-  .mod-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:20px 12px 16px;display:flex;flex-direction:column;align-items:center;gap:9px;cursor:pointer;transition:border-color .15s,box-shadow .15s;text-decoration:none;}
+  .hub-body{padding:28px;background:linear-gradient(180deg,#f7f5f0 0%,#ece7dc 100%);}
+  .modules-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-items:stretch;grid-auto-rows:1fr;}
+  .mod-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:20px 12px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;cursor:pointer;transition:border-color .15s,box-shadow .15s;text-decoration:none;width:100%;height:148px;box-sizing:border-box;}
   .mod-card:hover{border-color:#185FA5;box-shadow:0 4px 16px rgba(24,95,165,.1);}
   .mod-card.disabled{opacity:.42;cursor:default;pointer-events:none;}
   .mod-icon{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;}
@@ -51,6 +51,7 @@
   .mod-icon.amber{background:#fef3c7;}
   .mod-icon.red{background:#fee2e2;}
   .mod-icon.gray{background:#f3f4f6;}
+  .mod-icon.purple{background:#ede9fe;}
   .mod-name{font-size:13px;font-weight:600;color:var(--text);text-align:center;}
   .mod-desc{font-size:11px;color:var(--muted);text-align:center;line-height:1.4;}
   .mod-soon{font-size:10px;color:var(--muted);background:#f3f4f6;border-radius:4px;padding:2px 8px;margin-top:2px;}
@@ -165,6 +166,15 @@
           <div class="mod-name">Documenti</div>
           <div class="mod-desc">Contratti</div>
           <span class="mod-soon">prossimamente</span>
+        </div>
+
+        <!-- Giochi -->
+        <div class="mod-card" onclick="openModule('https://notespesedipendenti.github.io/Giochi/','giochi')" id="cardGiochi">
+          <div class="mod-icon purple">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="1.8"><path d="M6 12h4m-2-2v4"/><path d="M15 11h.01M18 13h.01"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+          </div>
+          <div class="mod-name">Giochi</div>
+          <div class="mod-desc">Un po' di svago</div>
         </div>
 
       </div>
@@ -290,6 +300,7 @@ function applyPermessi() {
     'programmazione': 'cardProgrammazione',
     'vmc':            'cardVmc',
     'corsi':          'cardCorsi',
+    'giochi':         'cardGiochi',
     'statistiche':    'cardStatistiche',
     'documenti':      'cardDocumenti',
   };
